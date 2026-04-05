@@ -1,0 +1,70 @@
+import os
+import json
+import pandas as pd
+import tensorflow as tf
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
+from routes import predict, recommend, weather, transform, auth
+
+# Load environment
+load_dotenv()
+
+app = FastAPI(title="AI Makeup Analysis System")
+
+# CORS config
+# Build allowed origins list from env (comma-separated) + local dev default
+_raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173")
+ALLOWED_ORIGINS = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+@app.on_event("startup")
+async def startup_event():
+    # Load model
+    model_path = os.path.join(BASE_DIR, "model/skin_tone_model.h5")
+    if os.path.exists(model_path):
+        app.state.model = tf.keras.models.load_model(model_path)
+    else:
+        app.state.model = None
+        print(f"Warning: Model not found at {model_path}")
+        
+    # Load dataset
+    data_path = os.path.join(BASE_DIR, "data.csv")
+    if os.path.exists(data_path):
+        app.state.df = pd.read_csv(data_path)
+    else:
+        app.state.df = None
+        print(f"Warning: Dataset not found at {data_path}")
+        
+    # Load class indices
+    indices_path = os.path.join(BASE_DIR, "model/class_indices.json")
+    if os.path.exists(indices_path):
+        with open(indices_path, 'r') as f:
+            app.state.class_indices = json.load(f)
+    else:
+        app.state.class_indices = {"0": "Fair", "1": "Medium", "2": "Dark"}
+
+# Include routers
+app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(predict.router, prefix="/api/predict", tags=["Prediction"])
+app.include_router(recommend.router, prefix="/api/recommend", tags=["Recommendation"])
+app.include_router(weather.router, prefix="/api/weather", tags=["Weather"])
+app.include_router(transform.router, prefix="/api/transform", tags=["Transformation"])
+
+@app.get("/")
+async def root():
+    return {"message": "AI Beauty Studio API is running", "docs": "/docs"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)

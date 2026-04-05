@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+tensorflow
+opencv-python-headless
+pillow
+pandas
+numpy
+httpx
+python-multipart
+scikit-learn
+python-dotenv
+supabase
+python-jose[cryptography]
+passlib[bcrypt]
