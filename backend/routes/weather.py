@@ -4,7 +4,7 @@ import httpx
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def get_weather_tips(city: str = Query("Chennai")):
     api_key = os.getenv("OPENWEATHER_API_KEY")
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"

@@ -4,7 +4,7 @@ from utils.image_processing import detect_and_crop_face, preprocess_for_model, c
 
 router = APIRouter()
 
-@router.post("/")
+@router.post("")
 async def predict_skin_tone(request: Request, file: UploadFile = File(...)):
     if not file.content_type.startswith("image/"):
         raise HTTPException(400, "Only image files allowed.")

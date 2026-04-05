@@ -3,7 +3,7 @@ from utils.image_processing import calculate_transformation_score
 
 router = APIRouter()
 
-@router.post("/")
+@router.post("")
 async def transform(before: UploadFile = File(...), after: UploadFile = File(...)):
     before_bytes = await before.read()
     after_bytes = await after.read()

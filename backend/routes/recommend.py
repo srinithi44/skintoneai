@@ -3,7 +3,7 @@ from utils.dataset_handler import get_recommendations, get_all_modes
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def recommend(request: Request, skin_tone: str = Query(...), mode: str = Query("Daily")):
     products = get_recommendations(request.app.state.df, skin_tone, mode)
     return {
