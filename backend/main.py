@@ -22,8 +22,16 @@ app = FastAPI(title="AI Makeup Analysis System")
 
 # CORS config
 # Build allowed origins list from env (comma-separated) + local dev default
-_raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173")
-ALLOWED_ORIGINS = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+default_origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://skintoneai.onrender.com"
+]
+
+_raw_origins = os.getenv("ALLOWED_ORIGINS", "")
+env_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
+ALLOWED_ORIGINS = list(set(default_origins + env_origins))
 
 app.add_middleware(
     CORSMiddleware,
