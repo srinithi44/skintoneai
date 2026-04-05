@@ -1,6 +1,5 @@
 fastapi
 uvicorn[standard]
-tensorflow
 opencv-python-headless
 pillow
 pandas

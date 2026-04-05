@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Sun, Cloud, CloudRain, Wind, Droplet, Sparkles, ThermometerSun } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const WeatherWidget = () => {
   const [city, setCity] = useState('Chennai');
@@ -11,7 +11,7 @@ const WeatherWidget = () => {
   const fetchWeather = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`/api/weather/?city=${city}`);
+      const { data } = await api.get(`/api/weather/?city=${city}`);
       setWeather(data);
     } catch {
       setWeather(null);

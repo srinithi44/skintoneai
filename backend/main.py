@@ -1,7 +1,14 @@
 import os
 import json
 import pandas as pd
-import tensorflow as tf
+# TensorFlow is optional — if not installed the app uses pixel-based skin analysis
+try:
+    import tensorflow as tf
+    TF_AVAILABLE = True
+except ImportError:
+    tf = None
+    TF_AVAILABLE = False
+    print("INFO: TensorFlow not installed — using pixel-based skin classifier.")
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
@@ -32,11 +39,15 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 async def startup_event():
     # Load model
     model_path = os.path.join(BASE_DIR, "model/skin_tone_model.h5")
-    if os.path.exists(model_path):
+    if TF_AVAILABLE and os.path.exists(model_path):
         app.state.model = tf.keras.models.load_model(model_path)
+        print(f"Model loaded from {model_path}")
     else:
         app.state.model = None
-        print(f"Warning: Model not found at {model_path}")
+        if not TF_AVAILABLE:
+            print("INFO: Running without TensorFlow — pixel-based classifier active.")
+        else:
+            print(f"Warning: Model not found at {model_path}")
         
     # Load dataset
     data_path = os.path.join(BASE_DIR, "data.csv")

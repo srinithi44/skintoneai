@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Wand2, Loader2, RefreshCcw, AlertCircle, CheckCircle2, ArrowLeftRight } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const UploadZone = ({ id, type, preview, onUpload, label, subLabel, icon: Icon }) => (
   <div
@@ -60,7 +60,7 @@ const TransformationTool = () => {
     formData.append('after', after);
 
     try {
-      const { data } = await axios.post('/api/transform', formData);
+      const { data } = await api.post('/api/transform', formData);
       setResult(data);
     } catch (err) {
       setError(err.response?.data?.detail || 'Transformation analysis failed. Please try again.');

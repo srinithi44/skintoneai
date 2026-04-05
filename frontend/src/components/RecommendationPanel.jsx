@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Package, ArrowRight, Tag, Filter, Sparkles } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const SKIN_TONES = ['Fair', 'Medium', 'Dusky', 'Dark'];
 
@@ -27,7 +27,7 @@ const RecommendationPanel = ({ skinTone }) => {
 
   // Fetch available modes once on mount
   useEffect(() => {
-    axios.get('/api/recommend/modes')
+    api.get('/api/recommend/modes')
       .then(({ data }) => { if (data.modes?.length > 0) setModes(data.modes); })
       .catch(() => {});
   }, []);
@@ -36,7 +36,7 @@ const RecommendationPanel = ({ skinTone }) => {
   const handleFetch = useCallback(async (tone, mode) => {
     setLoading(true);
     try {
-      const { data } = await axios.get(
+      const { data } = await api.get(
         `/api/recommend/?skin_tone=${encodeURIComponent(tone)}&mode=${encodeURIComponent(mode)}`
       );
       setProducts(data.products || []);

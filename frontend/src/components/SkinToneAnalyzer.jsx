@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, Upload, CheckCircle2, AlertCircle, Loader2, Sparkles } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const SkinToneAnalyzer = ({ onAnalysisComplete, onSwitchToRecommendations }) => {
   const [file, setFile] = useState(null);
@@ -28,7 +28,7 @@ const SkinToneAnalyzer = ({ onAnalysisComplete, onSwitchToRecommendations }) => 
     formData.append('file', file);
 
     try {
-      const { data } = await axios.post('/api/predict', formData);
+      const { data } = await api.post('/api/predict', formData);
       setResult(data);
       onAnalysisComplete(data);
     } catch (err) {
