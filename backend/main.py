@@ -13,7 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from routes import predict, recommend, weather, transform, auth
+from routes import predict, recommend, weather, transform, auth, full_analysis
 
 # Load environment
 load_dotenv()
@@ -58,7 +58,7 @@ async def startup_event():
             print(f"Warning: Model not found at {model_path}")
         
     # Load dataset
-    data_path = os.path.join(BASE_DIR, "data.csv")
+    data_path = os.path.join(BASE_DIR, "cleaned_data.csv")
     if os.path.exists(data_path):
         app.state.df = pd.read_csv(data_path)
     else:
@@ -79,6 +79,7 @@ app.include_router(predict.router, prefix="/api/predict", tags=["Prediction"])
 app.include_router(recommend.router, prefix="/api/recommend", tags=["Recommendation"])
 app.include_router(weather.router, prefix="/api/weather", tags=["Weather"])
 app.include_router(transform.router, prefix="/api/transform", tags=["Transformation"])
+app.include_router(full_analysis.router, prefix="/api/full-analysis", tags=["Full Analysis"])
 
 @app.get("/")
 async def root():

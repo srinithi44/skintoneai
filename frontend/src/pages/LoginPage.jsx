@@ -55,7 +55,7 @@ const LoginPage = ({ onSwitchToSignup }) => {
           >
             <Sparkles className="auth-logo-icon" />
           </motion.div>
-          <span className="auth-logo-text">AI Beauty Studio</span>
+          <span className="auth-logo-text">GlowMatchAI</span>
         </div>
 
         <h1 className="auth-title">Welcome back</h1>
